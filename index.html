@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2299.77">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">// index.js</span></p>
+<p class="p1"><span class="s1">const express = require('express');</span></p>
+<p class="p1"><span class="s1">const cors = require('cors');</span></p>
+<p class="p1"><span class="s1">const axios = require('axios');</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const app = express();</span></p>
+<p class="p1"><span class="s1">const PORT = process.env.PORT || 3000;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// Enable CORS for your GitHub Pages domain</span></p>
+<p class="p1"><span class="s1">app.use(cors({</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>origin: ['https://rknight121.github.io', 'http://localhost:3000'],</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>methods: ['GET'],</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>credentials: false</span></p>
+<p class="p1"><span class="s1">}));</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// Root route</span></p>
+<p class="p1"><span class="s1">app.get('/', (req, res) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>res.send('NOAA Aviation Weather Proxy Server is running');</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// Proxy endpoint for METAR data</span></p>
+<p class="p1"><span class="s1">app.get('/api/metar', async (req, res) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>try {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const queryParams = new URLSearchParams(req.query).toString();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const url = `https://aviationweather.gov/api/data/metar?${queryParams}`;</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>console.log(`Proxying request to: ${url}`);</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const response = await axios.get(url);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>res.json(response.data);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>} catch (error) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>console.error('Error proxying METAR request:', error.message);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>res.status(500).json({ error: 'Failed to fetch METAR data from NOAA API' });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// Proxy endpoint for TAF data</span></p>
+<p class="p1"><span class="s1">app.get('/api/taf', async (req, res) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>try {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const queryParams = new URLSearchParams(req.query).toString();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const url = `https://aviationweather.gov/api/data/taf?${queryParams}`;</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>console.log(`Proxying request to: ${url}`);</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const response = await axios.get(url);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>res.json(response.data);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>} catch (error) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>console.error('Error proxying TAF request:', error.message);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>res.status(500).json({ error: 'Failed to fetch TAF data from NOAA API' });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// Start the server</span></p>
+<p class="p1"><span class="s1">if (process.env.NODE_ENV !== 'production') {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>app.listen(PORT, () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>console.log(`Proxy server running on port ${PORT}`);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// Export for serverless functions</span></p>
+<p class="p1"><span class="s1">module.exports = app;</span></p>
+</body>
+</html>
